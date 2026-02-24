@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
     try {
         const { userId } = await auth()
         const { searchParams } = new URL(request.url)
+        const search = searchParams.get('search') || ''
         const myEvents = searchParams.get('myEvents') === 'true'
 
         if (!userId) {
@@ -50,7 +51,17 @@ export async function GET(request: NextRequest) {
                 orderBy: { date: 'asc' },
             })
         } else {
-            // Get all events
+            if (search.length>0){
+                events =await prisma.event.findMany({
+                    where:{
+                        title:{
+                            contains: search,
+                            mode:'insensitive'
+                        }
+                    }
+                })
+            }else{
+                // Get all events
             events = await prisma.event.findMany({
                 include: {
                     createdBy: true,
@@ -66,6 +77,7 @@ export async function GET(request: NextRequest) {
                 },
                 orderBy: { date: 'asc' },
             })
+            }
         }
 
         return NextResponse.json(events)

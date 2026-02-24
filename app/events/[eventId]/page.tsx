@@ -152,7 +152,7 @@ export default function EventDetailClient({
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br max-w-5xl space-y-4 from-pink-50 via-white to-purple-50">
+        <div className="min-h-screen bg-gradient-to-br w-full space-y-4 from-pink-50 via-white to-purple-50 lg:mx-2">
 
             {/* Dialog for users who have not added their university details  */}
             {!canRegister && (
@@ -639,7 +639,7 @@ export default function EventDetailClient({
 
 function PageSkeleton() {
     return (
-        <div className="min-h-screen max-w-5xl w-full space-y-4 bg-gradient-to-br from-pink-50 via-white to-purple-50">
+        <div className="min-h-screen  w-full space-y-4 bg-gradient-to-br from-pink-50 via-white to-purple-50">
             {/* Hero Skeleton */}
             <div className="relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-95" />

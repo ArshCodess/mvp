@@ -4,6 +4,8 @@ import "./globals.css";
 import { ClerkProvider, UserButton } from "@clerk/nextjs";
 import UserProvider from "@/hooks/UserProvider";
 import Sidebar from "@/components/Sidebar";
+import AnnouncementCard from "@/components/AnnouncementCard";
+import Notifications from "@/components/Notifications";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,12 +32,14 @@ export default function RootLayout({
       <UserProvider>
         <html lang="en">
           <body
-            className={`${geistSans.variable} md:flex ${geistMono.variable} antialiased  md:mx-20 md:justify-center md:space-x-15`}
+            className={`${geistSans.variable} ${geistMono.variable} antialiased  md:mx-2 lg:mx-3 xl:mx-4`}
           >
-            <Sidebar/>
-            <div className="p-4 absolute z-10 top-4 right-4"><UserButton /></div>
-            {children}
-            <div className="bg-blue-400">Notifications</div>
+            <div className="md:flex md:justify-between md:gap-4 w-full">
+              <Sidebar />
+              {children}
+              {/* <Notifications /> */}
+            </div>
+            <div className=" absolute z-10 top-4 right-4"><UserButton /></div>
           </body>
         </html>
       </UserProvider>

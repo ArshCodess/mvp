@@ -44,7 +44,7 @@ export default function EventCard({ event }: EventCardProps) {
   const StatusIcon = statusConfig.icon;
 
   return (
-    <div className="group relative bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300">
+    <div className="group w-full relative bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300">
       {/* {hasNewUpdate && (
         <div className="absolute top-4 right-4 z-10 px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse">
           Updated

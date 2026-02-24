@@ -1,5 +1,6 @@
 "use client"
-import { Home, Calendar, Megaphone, Bell, User } from 'lucide-react';
+import { Home, Calendar, Megaphone, Bell, User, Heart, Search } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 interface SidebarProps {
@@ -8,17 +9,16 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home },
-  { id: 'events', label: 'My Events', icon: Calendar },
-  { id: 'announcements', label: 'Announcements', icon: Megaphone },
+  { id: 'applied', label: 'Applied', icon: Heart },
+  { id: 'events', label: 'Explore', icon: Search },
   { id: 'notifications', label: 'Notifications', icon: Bell },
   { id: 'profile', label: 'Profile', icon: User },
 ];
 
 export default function Sidebar() {
-  const [activeTab, onTabChange] = useState("dashboard");
+  const [activeTab, onTabChange] = useState("applied");
   return (
-    <aside className="h-screen top-0 hidden md:sticky md:flex lg:w-64 bg-white border-r border-l border-gray-200">
+    <aside className="h-screen top-0 hidden sticky md:flex lg:w-64 bg-white border-r border-l border-gray-200">
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex items-center h-16 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-2">
@@ -31,23 +31,24 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1">
+        <nav className="flex-1 px-4 py-6 space-y-1 ">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
             return (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
-                  isActive
-                    ? 'bg-gradient-to-r from-indigo-50 to-pink-50 text-indigo-700 shadow-sm'
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                }`}
-              >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : ''}`} />
-                <span className="font-medium">{item.label}</span>
-              </button>
+              <Link href={`/${item.id ===activeTab ?'':item.id }`} key={item.id}>
+                <button
+                  key={item.id}
+                  onClick={() => onTabChange(item.id)}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                      ? 'bg-gradient-to-r from-indigo-50 to-pink-50 text-indigo-700 shadow-sm'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                    }`}
+                >
+                  <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : ''}`} />
+                  <span className="font-medium">{item.label}</span>
+                </button>
+              </Link>
             );
           })}
         </nav>
