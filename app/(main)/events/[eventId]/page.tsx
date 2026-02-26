@@ -642,7 +642,7 @@ function PageSkeleton() {
         <div className="min-h-screen  w-full space-y-4 bg-gradient-to-br from-pink-50 via-white to-purple-50">
             {/* Hero Skeleton */}
             <div className="relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-purple-600 opacity-95" />
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-pink-500 opacity-95" />
                 <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-16 md:py-20 lg:py-32 animate-pulse">
                     <div className="h-6 sm:h-8 w-24 sm:w-32 bg-white/20 rounded-full mb-3 sm:mb-4 md:mb-6" />
                     <div className="h-10 sm:h-12 md:h-16 lg:h-20 bg-white/20 rounded-lg mb-3 sm:mb-4 md:mb-6 w-full max-w-2xl" />

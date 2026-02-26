@@ -7,8 +7,8 @@ import { checkUser } from '@/lib/clerk'
 function page() {
   const user = checkUser()
   return (
-    <div className='md:flex md:gap-2 w-full'>
-      <div className='w-full space-y-4'>
+    <div className='md:flex md:gap-4 w-full'>
+      <div className='w-full'>
         {/* <WelcomeBanner/> */}
         <CardWithSearch/>
       </div>

@@ -204,11 +204,11 @@ export default function ProfilePage() {
     const hasUniversityDetails = !!profileData.universityDetails;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-5xl mx-auto">
+        <div className="min-h-screen w-full  py-8 px-4 sm:px-6 lg:px-8">
+            <div className=" ">
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-3">
+                <div className=" mb-8 border-b border-gray-200 pb-4">
+                    <h1 className="text-xl  sm:text-3xl font-bold text-gray-900 mb-3">
                         My Profile
                     </h1>
                     <p className="text-gray-600">Manage your account information</p>
@@ -498,7 +498,7 @@ export default function ProfilePage() {
                                     </div>
                                 </form>
                             ) : (
-                                <div className="space-y-6">
+                                <div className="grid lg:grid-cols-2 gap-6">
                                     <InfoRow icon={<User className="w-5 h-5" />} label="Name" value={profileData.universityDetails!.name} />
                                     <InfoRow icon={<Book className="w-5 h-5" />} label="Enrollment Number" value={profileData.universityDetails!.enrollmentNumber} />
                                     <InfoRow icon={<Book className="w-5 h-5" />} label="Course" value={profileData.universityDetails!.course} />

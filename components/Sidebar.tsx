@@ -1,7 +1,8 @@
 "use client"
+import { UserButton } from '@clerk/nextjs';
 import { Home, Calendar, Megaphone, Bell, User, Heart, Search } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 interface SidebarProps {
   activeTab: string;
@@ -9,14 +10,19 @@ interface SidebarProps {
 }
 
 const menuItems = [
-  { id: 'applied', label: 'Applied', icon: Heart },
-  { id: 'events', label: 'Explore', icon: Search },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'profile', label: 'Profile', icon: User },
+  { id: 'applied', label: 'Applied', icon: Heart, href: '/applied' },
+  { id: 'events', label: 'Explore', icon: Search, href: '/events' },
+  { id: 'notifications', label: 'Notifications', icon: Bell, href: '/notifications' },
+  { id: 'profile', label: 'Profile', icon: User, href: '/profile' },
 ];
 
 export default function Sidebar() {
-  const [activeTab, onTabChange] = useState("applied");
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    return pathname === href || pathname.startsWith(href + '/');
+  };
+
   return (
     <aside className="h-screen top-0 hidden sticky md:flex lg:w-64 bg-white border-r border-l border-gray-200">
       <div className="flex-1 flex flex-col min-h-0">
@@ -31,21 +37,20 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <nav className="flex-1 px-4 py-6 space-y-1 ">
+        <nav className="flex-1 px-4 py-6 space-y-1">
           {menuItems.map((item) => {
             const Icon = item.icon;
-            const isActive = activeTab === item.id;
+            const active = isActive(item.href);
             return (
-              <Link href={`/${item.id ===activeTab ?'':item.id }`} key={item.id}>
+              <Link href={item.href} key={item.id}>
                 <button
-                  key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    active
                       ? 'bg-gradient-to-r from-indigo-50 to-pink-50 text-indigo-700 shadow-sm'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                    }`}
+                  }`}
                 >
-                  <Icon className={`w-5 h-5 ${isActive ? 'text-indigo-600' : ''}`} />
+                  <Icon className={`w-5 h-5 ${active ? 'text-indigo-600' : ''}`} />
                   <span className="font-medium">{item.label}</span>
                 </button>
               </Link>

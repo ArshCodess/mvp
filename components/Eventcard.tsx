@@ -91,14 +91,14 @@ export default function EventCard({ event }: EventCardProps) {
           </div>
         </div>
 
-        <div className={`flex items-center justify-between px-4 py-3 rounded-xl ${statusConfig.bgColor} border ${statusConfig.borderColor}`}>
+        {/* <div className={`flex items-center justify-between px-4 py-3 rounded-xl ${statusConfig.bgColor} border ${statusConfig.borderColor}`}>
           <div className="flex items-center space-x-2">
             <StatusIcon className={`w-5 h-5 ${statusConfig.textColor}`} />
             <span className={`text-sm font-semibold ${statusConfig.textColor}`}>
               {statusConfig.label}
             </span>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
