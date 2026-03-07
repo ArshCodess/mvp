@@ -28,7 +28,6 @@ function CardGrid({ search }: CardGridProps) {
       }
 
       const json = await res.json();
-      console.log(json)
       setData(json)
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -42,7 +41,7 @@ function CardGrid({ search }: CardGridProps) {
   }, [search])
 
   return (
-    <div className="grid md:mx-0 mx-2 grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+    <div className="grid  grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
       {loading ? (
         Array.from({ length: 4 }).map((_, index) => (
           <EventCardSkeleton key={index} />

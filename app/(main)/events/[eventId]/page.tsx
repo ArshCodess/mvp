@@ -33,7 +33,7 @@ export default function EventDetailClient({
             (eventDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
         );
     }, [eventDate]);
-    console.log(daysLeft)
+    (daysLeft)
     const isClosed = daysLeft !== null && daysLeft <= 0;
 
     useEffect(() => {

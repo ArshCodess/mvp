@@ -23,9 +23,6 @@ export default function CreateEventForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-
-        // 🔴 Replace with API call
-        console.log("Event Data:", formData);
         e.preventDefault();
         try {
             const response = await fetch('/api/dashboard', {

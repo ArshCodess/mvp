@@ -80,7 +80,6 @@ export default function ProfilePage() {
             const response = await fetch("/api/profile");
             if (!response.ok) {
                 response.json().then(data => {
-                    console.log(data);
                     throw new Error(`${data.error} ${data.details} Failed to fetch profile`);
                 })
             }

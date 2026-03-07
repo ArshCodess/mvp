@@ -1,3 +1,4 @@
+"use client"
 import CardGrid from "@/components/CardGrid"
 import { useState } from "react"
 

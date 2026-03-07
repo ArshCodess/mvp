@@ -8,7 +8,7 @@ export default clerkMiddleware(
   async (auth, req) => {
     const { sessionClaims } = await auth();
     const userRole = sessionClaims?.metadata?.role
-    console.log(userRole);
+
     // Protect all routes starting with `/admin`
     if (isAdminRoute(req) && !(userRole === 'admin' || userRole === 'moderator')) {
       const url = new URL('/unauthorized', req.url);

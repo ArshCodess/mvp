@@ -14,7 +14,6 @@ interface UserProps {
 export default function WelcomeBanner() {
   const { user: data, isLoading } = useUser();
   const router = useRouter();
-  data && console.log("User in banner:", data);
   const user = data?.universityDetails
   const [isExpanded, setIsExpanded] = useState(false)
   if (isLoading)

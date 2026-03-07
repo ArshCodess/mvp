@@ -4,12 +4,12 @@ import { auth } from '@clerk/nextjs/server'
 import prisma from '@/lib/prisma'
 
 const updateSchema = z.object({
-    title:       z.string().min(1, 'Title is required').optional(),
+    title: z.string().min(1, 'Title is required').optional(),
     description: z.string().min(1, 'Description is required').optional(),
-    date:        z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid date' }).optional(),
-    category:    z.string().min(1, 'Category is required').optional(),
-    location:    z.string().min(1, 'Location is required').optional(),
-    imageUrl:    z.string().url('Invalid image URL').optional().nullable(),
+    date: z.string().refine((val) => !isNaN(Date.parse(val)), { message: 'Invalid date' }).optional(),
+    category: z.string().min(1, 'Category is required').optional(),
+    location: z.string().min(1, 'Location is required').optional(),
+    imageUrl: z.string().url('Invalid image URL').optional().nullable(),
 })
 // GET /api/events/[id] - Get single event
 export async function GET(
@@ -18,7 +18,7 @@ export async function GET(
 ) {
     try {
         const { userId } = await auth()
-        const {eventId} = await params;
+        const { eventId } = await params;
 
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -26,7 +26,8 @@ export async function GET(
 
         const event = await prisma.event.findUnique({
             where: {
-                 id: eventId },
+                id: eventId
+            },
             include: {
                 createdBy: true,
                 registrations: {
@@ -67,11 +68,11 @@ export async function GET(
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { eventId: string } }
+    { params }: { params: Promise<{ eventId: string }> }
 ) {
     try {
         const { userId } = await auth()
-
+        const { eventId } = await params;
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
@@ -84,7 +85,7 @@ export async function PATCH(
 
         // Make sure the event exists and belongs to this admin
         const existing = await prisma.event.findUnique({
-            where: { id: params.eventId },
+            where: { id: eventId },
         })
 
         if (!existing) {
@@ -99,13 +100,13 @@ export async function PATCH(
         const validatedData = updateSchema.parse(body)
 
         const updatedEvent = await prisma.event.update({
-            where: { id: params.eventId },
+            where: { id: eventId },
             data: {
-                ...(validatedData.title       && { title: validatedData.title }),
+                ...(validatedData.title && { title: validatedData.title }),
                 ...(validatedData.description && { description: validatedData.description }),
-                ...(validatedData.date        && { date: new Date(validatedData.date) }),
-                ...(validatedData.category    && { category: validatedData.category }),
-                ...(validatedData.location    && { location: validatedData.location }),
+                ...(validatedData.date && { date: new Date(validatedData.date) }),
+                ...(validatedData.category && { category: validatedData.category }),
+                ...(validatedData.location && { location: validatedData.location }),
                 ...('imageUrl' in validatedData && { imageUrl: validatedData.imageUrl ?? null }),
             },
             include: {
@@ -132,10 +133,11 @@ export async function PATCH(
 // DELETE /api/events/[eventId] — Admin only, must own the event
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { eventId: string } }
+    { params }: { params: Promise<{ eventId: string }> }
 ) {
     try {
         const { userId } = await auth()
+        const { eventId } = await params;
 
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -148,7 +150,7 @@ export async function DELETE(
         }
 
         const existing = await prisma.event.findUnique({
-            where: { id: params.eventId },
+            where: { id: eventId },
         })
 
         if (!existing) {
@@ -159,7 +161,7 @@ export async function DELETE(
             return NextResponse.json({ error: 'You can only delete your own events' }, { status: 403 })
         }
 
-        await prisma.event.delete({ where: { id: params.eventId } })
+        await prisma.event.delete({ where: { id: eventId } })
 
         return NextResponse.json({ success: true })
     } catch (error) {

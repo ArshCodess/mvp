@@ -5,6 +5,13 @@ import { auth } from '@clerk/nextjs/server'
 
 const registrationSchema = z.object({
   eventId: z.string().min(1, 'Event ID is required'),
+  course: z.string().min(1, 'Course is required'),
+  enrollmentNumber: z.string().min(1, 'Enrollment number is required'),
+  group: z.string().min(1, 'Group is required'),
+  name: z.string().min(1, 'Name is required'),
+  phoneNumber: z.string().min(1, 'Phone number is required'),
+  year : z.number().int().min(1, 'Year is required').max(4, 'Year must be less than or equal to 4').default(1),
+
 })
 
 // GET /api/registrations - Get user's registrations
@@ -96,6 +103,12 @@ export async function POST(request: NextRequest) {
       data: {
         userId: user.id,
         eventId: validatedData.eventId,
+        course: validatedData.course,
+        enrollmentNumber: validatedData.enrollmentNumber,
+        group: validatedData.group,
+        name: validatedData.name,
+        phoneNumber: validatedData.phoneNumber,
+        year: validatedData.year,
       },
       include: {
         event: {
