@@ -284,7 +284,7 @@ export default function EventDetailClient({
                 </div>
 
                 {/* Wave Divider */}
-                <div className="relative -mb-1 ">
+                {/* <div className="relative -mb-1 ">
                     <svg
                         className="w-full h-8 sm:h-12 md:h-20 absolute bottom-0 rotate-180"
                         viewBox="0 0 1200 120"
@@ -295,7 +295,7 @@ export default function EventDetailClient({
                             fill="#ffffff"
                         />
                     </svg>
-                </div>
+                </div> */}
             </section>
 
             {/* STATS SECTION */}
