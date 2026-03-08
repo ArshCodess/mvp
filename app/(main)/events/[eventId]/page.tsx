@@ -292,7 +292,7 @@ export default function EventDetailClient({
             )}
 
             {/* ── HERO ── */}
-            <section className="relative overflow-hidden">
+            <section className="relative rounded-b-2xl overflow-hidden">
                 {event.imageUrl && (
                     <img src={event.imageUrl} alt={event.title} className="absolute inset-0 w-full h-full object-cover opacity-95" />
                 )}
@@ -304,7 +304,7 @@ export default function EventDetailClient({
                     }}
                 />
                 <div className="relative max-w-6xl mx-auto px-4 sm:px-6 py-8 pb-12 sm:py-16 md:py-32 md:pt-20">
-                    <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    <div className="flex  items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
                         <span className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs sm:text-sm font-medium border border-white/30">
                             {event.category}
                         </span>
@@ -318,9 +318,9 @@ export default function EventDetailClient({
                     <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-1 sm:mb-4 leading-tight">
                         {event.title}
                     </h1>
-                    <p className="text-sm sm:text-lg md:text-xl text-pink-100 max-w-3xl mb-2 sm:mb-8 leading-relaxed whitespace-pre-wrap">
+                    {/* <p className="text-xs h-min sm:h-full w-full overflow-scroll  text-ellipsis sm:text-lg md:text-xl text-pink-100 max-w-3xl mb-2 sm:mb-8 leading-relaxed whitespace-pre-wrap" style={{scrollbarWidth:"none"}}>
                         {event.description}
-                    </p>
+                    </p> */}
 
                     <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-white/90 text-xs sm:text-base">
                         <div className="flex items-center gap-1.5 sm:gap-2">
@@ -416,11 +416,13 @@ export default function EventDetailClient({
             </div>
 
             {/* ── MAIN CONTENT ── */}
-            <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-16 grid lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
-
+            <section className="max-w-6xl mx-auto px-4 sm:px-6 py-6 md:pb-16 grid lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12 relative mb-20">
                 {/* ──── LEFT COLUMN ──── */}
-                <div className="lg:col-span-2 space-y-6 sm:space-y-8 md:space-y-12">
-
+                <div className="lg:col-span-2 space-y-6 sm:space-y-8 md:space-y-12 relative">
+                    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-fuchsia-200 p-4 sm:p-6 md:p-8">
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4">📖 Description</h1>
+                        <p className="text-sm sm:text-base text-gray-700 leading-relaxed whitespace-pre-wrap">{event.description}</p>
+                    </div>
                     {/* Highlights */}
                     {event.highlights?.length > 0 && (
                         <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 md:p-8">
@@ -450,7 +452,7 @@ export default function EventDetailClient({
                                 <span className="text-2xl sm:text-3xl">🎁</span>
                                 What You'll Get
                             </h2>
-                            <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
+                            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 w-full">
                                 {event.rewards.map((reward) => (
                                     <div key={reward.id} className="bg-white space-x-3 md:space-x-0 items-center flex md:block rounded-xl p-4 sm:p-6 md:text-center shadow-md hover:shadow-xl transition-shadow">
                                         <div className="text-3xl sm:text-4xl md:mb-3">{reward.icon}</div>
@@ -466,12 +468,12 @@ export default function EventDetailClient({
 
                     {/* ── IMPORTANT LINKS ── */}
                     {event.links?.length > 0 && (
-                        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 md:p-8">
+                        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 md:p-8 ">
                             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
                                 <span className="text-2xl sm:text-3xl">🔗</span>
                                 Important Links
                             </h2>
-                            <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                            <div className="grid gap-3 sm:gap-4">
                                 {event.links.map((link) => {
                                     const meta = LINK_META[link.type] ?? LINK_META.OTHER;
                                     return (
@@ -492,7 +494,7 @@ export default function EventDetailClient({
                                                 <p className={`text-sm sm:text-base font-semibold ${meta.text} truncate`}>
                                                     {link.label || meta.label}
                                                 </p>
-                                                <p className="text-xs text-gray-500 truncate">{link.url}</p>
+                                                <p className="text-xs text-gray-500 truncate w-[40vw] md:w-[20vw]">{link.url}</p>
                                             </div>
 
                                             {/* Arrow */}
@@ -508,7 +510,7 @@ export default function EventDetailClient({
                 </div>
 
                 {/* ──── RIGHT SIDEBAR ──── */}
-                <div className="space-y-6 hidden md:block">
+                <div className="space-y-6 hidden lg:block">
                     <div className="sticky top-6 space-y-6">
 
                         {/* Registration Card */}

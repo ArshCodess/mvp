@@ -4,10 +4,6 @@ import { Home, Calendar, Megaphone, Bell, User, Heart, Search } from 'lucide-rea
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-interface SidebarProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-}
 
 const menuItems = [
   { id: 'applied', label: 'Applied', icon: Heart, href: '/applied' },
@@ -24,7 +20,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="h-screen top-0 hidden sticky md:flex lg:w-64 bg-white border-r border-l border-gray-200">
+    <aside className="h-screen top-0 hidden sticky lg:flex lg:w-64 bg-white border-r border-l border-gray-200">
       <div className="flex-1 flex flex-col min-h-0">
         <div className="flex items-center h-16 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-2">
