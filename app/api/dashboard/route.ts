@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
                         },
                     },
                 },
-                orderBy: { date: 'asc' },
+                orderBy: { date: 'desc' },
             })
         } else {
             if (search.length>0){
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
                         },
                     },
                 },
-                orderBy: { date: 'asc' },
+                orderBy: { date: 'desc' },
             })
             }
         }

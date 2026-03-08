@@ -31,38 +31,38 @@ enum RegistrationStatus {
 // USER MODEL
 // ==========================
 model User {
-  id            String         @id @default(cuid())
-  clerkId       String         @unique
-  email         String         @unique
-  name          String?
-  first_name    String?
-  last_name     String?
-  imageUrl      String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  
-  role      Role     @default(PARTICIPANT)
+  id         String   @id @default(cuid())
+  clerkId    String   @unique
+  email      String   @unique
+  name       String?
+  first_name String?
+  last_name  String?
+  imageUrl   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  role Role @default(PARTICIPANT)
 
   // Relations
-  eventsCreated      Event[]
-  registrations      Registration[]
-  announcements      Announcement[]
-  universityDetails  UniversityDetails?
+  eventsCreated     Event[]
+  registrations     Registration[]
+  announcements     Announcement[]
+  universityDetails UniversityDetails?
 
   @@index([clerkId])
 }
 
 model UniversityDetails {
-  id                 String   @id @default(uuid())
-  userId             String   @unique
-  name               String
-  enrollmentNumber   String   @unique
-  course             String
-  year                Int   @default(1)
-  group              String
-  phoneNumber        String
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  name             String
+  enrollmentNumber String   @unique
+  course           String
+  year             Int      @default(1)
+  group            String
+  phoneNumber      String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -70,26 +70,72 @@ model UniversityDetails {
   @@index([userId])
 }
 
-// ==========================
-// EVENT MODEL
-// ==========================
+model EventLink {
+  id    String        @id @default(uuid())
+  label String
+  url   String
+  type  EventLinkType @default(OTHER)
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model EventHighlight {
+  id   String @id @default(uuid())
+  text String @db.Text
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+model EventReward {
+  id          String @id @default(uuid())
+  icon        String // e.g. "🏆"
+  title       String @db.Text
+  description String @db.Text
+
+  eventId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+}
+
+enum EventLinkType {
+  WHATSAPP
+  MEET
+  ZOOM
+  DISCORD
+  YOUTUBE
+  OTHER
+}
+
+// ─── Updated Event model ─────────────────────────
+
 model Event {
   id          String   @id @default(uuid())
   title       String
-  description String
+  description String @db.Text
   date        DateTime
   location    String
   category    String
+  capacity    Int      @default(0) // 0 = unlimited
   createdAt   DateTime @default(now())
   imageUrl    String?
 
   // Admin (Organizer)
   createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  createdBy   User   @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
   // Relations
-  registrations  Registration[]
-  announcements  Announcement[]
+  registrations Registration[]
+  announcements Announcement[]
+  links         EventLink[]
+  highlights    EventHighlight[]
+  rewards       EventReward[]
 
   @@index([createdById])
   @@index([date])
@@ -99,10 +145,10 @@ model Event {
 // REGISTRATION MODEL
 // ==========================
 model Registration {
-  id               String              @id @default(uuid())
-  status           RegistrationStatus  @default(PENDING)
-  registeredAt     DateTime            @default(now())
-  
+  id           String             @id @default(uuid())
+  status       RegistrationStatus @default(PENDING)
+  registeredAt DateTime           @default(now())
+
   // New fields for registration form
   name             String
   enrollmentNumber String
@@ -115,8 +161,8 @@ model Registration {
   userId  String
   eventId String
 
-  user   User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event  Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@unique([userId, eventId]) // Prevent duplicate registrations
   @@unique([eventId, enrollmentNumber]) // Prevent duplicate enrollment numbers per event
@@ -137,8 +183,8 @@ model Announcement {
   eventId     String
   createdById String
 
-  event      Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  createdBy  User  @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdBy User  @relation(fields: [createdById], references: [id], onDelete: Cascade)
 
   @@index([eventId])
   @@index([createdById])

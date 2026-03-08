@@ -338,7 +338,7 @@ function EventsManagementTab() {
                     <h2 className="text-2xl font-bold text-gray-900">Events Management</h2>
                     <p className="text-sm text-gray-600 mt-1">Create and manage campus events</p>
                 </div>
-                <Link href="/admin/events/create">
+                <Link href="/events/create">
                     <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
                         <Plus className="w-4 h-4" />
                         Create Event
@@ -459,7 +459,7 @@ function EventsManagementTab() {
                                                             <Eye className="w-4 h-4 text-gray-600" />
                                                         </button>
                                                     </Link>
-                                                    <Link href={`/events/update`}>
+                                                    <Link href={`/events/${event.id}/update`}>
                                                         <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                                                             <Edit className="w-4 h-4 text-indigo-600" />
                                                         </button>
