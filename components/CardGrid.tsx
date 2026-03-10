@@ -17,8 +17,8 @@ function CardGrid({ search }: CardGridProps) {
     setLoading(true)
     try {
       const url = search.length > 0
-        ? `/api/dashboard?search=${search}`
-        : '/api/dashboard';
+        ? `/api/events?search=${search}`
+        : '/api/events';
 
       const res = await fetch(url);
 
