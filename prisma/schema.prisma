@@ -118,7 +118,7 @@ enum EventLinkType {
 model Event {
   id          String   @id @default(uuid())
   title       String
-  description String @db.Text
+  description String   @db.Text
   date        DateTime
   location    String
   category    String
@@ -175,9 +175,10 @@ model Registration {
 // ANNOUNCEMENT MODEL
 // ==========================
 model Announcement {
-  id        String   @id @default(uuid())
-  message   String
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  heading     String
+  description String
+  createdAt   DateTime @default(now())
 
   // Relations
   eventId     String

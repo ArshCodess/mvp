@@ -59,12 +59,12 @@ const CATEGORIES = [
 ];
 
 const LINK_TYPE_META: Record<LinkType, { label: string; placeholder: string; color: string; icon: string }> = {
-  WHATSAPP: { label: "WhatsApp",  placeholder: "https://chat.whatsapp.com/...",   color: "bg-green-50 border-green-300 text-green-700",  icon: "💬" },
-  MEET:     { label: "Google Meet", placeholder: "https://meet.google.com/...",   color: "bg-blue-50 border-blue-300 text-blue-700",    icon: "🎥" },
-  ZOOM:     { label: "Zoom",      placeholder: "https://zoom.us/j/...",           color: "bg-sky-50 border-sky-300 text-sky-700",       icon: "📹" },
-  DISCORD:  { label: "Discord",   placeholder: "https://discord.gg/...",          color: "bg-indigo-50 border-indigo-300 text-indigo-700", icon: "🎮" },
-  YOUTUBE:  { label: "YouTube",   placeholder: "https://youtube.com/live/...",    color: "bg-red-50 border-red-300 text-red-700",       icon: "▶️" },
-  OTHER:    { label: "Other",     placeholder: "https://...",                     color: "bg-gray-50 border-gray-300 text-gray-700",    icon: "🔗" },
+  WHATSAPP: { label: "WhatsApp", placeholder: "https://chat.whatsapp.com/...", color: "bg-green-50 border-green-300 text-green-700", icon: "💬" },
+  MEET: { label: "Google Meet", placeholder: "https://meet.google.com/...", color: "bg-blue-50 border-blue-300 text-blue-700", icon: "🎥" },
+  ZOOM: { label: "Zoom", placeholder: "https://zoom.us/j/...", color: "bg-sky-50 border-sky-300 text-sky-700", icon: "📹" },
+  DISCORD: { label: "Discord", placeholder: "https://discord.gg/...", color: "bg-indigo-50 border-indigo-300 text-indigo-700", icon: "🎮" },
+  YOUTUBE: { label: "YouTube", placeholder: "https://youtube.com/live/...", color: "bg-red-50 border-red-300 text-red-700", icon: "▶️" },
+  OTHER: { label: "Other", placeholder: "https://...", color: "bg-gray-50 border-gray-300 text-gray-700", icon: "🔗" },
 };
 
 const REWARD_ICON_OPTIONS = ["🏆", "🎁", "📜", "🤝", "🎓", "🍕", "👕", "💡", "🌟", "🎤"];
@@ -73,11 +73,11 @@ const uid = () => Math.random().toString(36).slice(2, 9);
 
 // ─── Step definitions ─────────────────────────────────────────────────────────
 const STEPS = [
-  { id: 1, label: "Basics",    icon: "✦" },
-  { id: 2, label: "Details",   icon: "◈" },
-  { id: 3, label: "Location",  icon: "◎" },
-  { id: 4, label: "Extras",    icon: "◇" },
-  { id: 5, label: "Preview",   icon: "◐" },
+  { id: 1, label: "Basics", icon: "✦" },
+  { id: 2, label: "Details", icon: "◈" },
+  { id: 3, label: "Location", icon: "◎" },
+  { id: 4, label: "Extras", icon: "◇" },
+  { id: 5, label: "Preview", icon: "◐" },
 ];
 
 // ─── Shared components ────────────────────────────────────────────────────────
@@ -294,8 +294,8 @@ function Step4Extras({
 
   const tabs: { key: "highlights" | "rewards" | "links"; label: string; emoji: string; count: number }[] = [
     { key: "highlights", label: "Highlights", emoji: "✨", count: form.highlights.length },
-    { key: "rewards",    label: "Rewards",    emoji: "🎁", count: form.rewards.length },
-    { key: "links",      label: "Links",      emoji: "🔗", count: form.links.length },
+    { key: "rewards", label: "Rewards", emoji: "🎁", count: form.rewards.length },
+    { key: "links", label: "Links", emoji: "🔗", count: form.links.length },
   ];
 
   return (
@@ -532,15 +532,15 @@ function Step5Preview({ form }: { form: EventForm }) {
     form.date && form.time ? new Date(`${form.date}T${form.time}`) : null;
 
   const checks: [string, boolean][] = [
-    ["Title",       !!form.title],
+    ["Title", !!form.title],
     ["Description", !!form.description],
-    ["Category",    !!form.category],
+    ["Category", !!form.category],
     ["Date & Time", !!(form.date && form.time)],
-    ["Location",    !!form.location],
-    ["Capacity",    !!form.capacity],
-    ["Highlights",  form.highlights.length > 0],
-    ["Rewards",     form.rewards.length > 0],
-    ["Links",       form.links.length > 0],
+    ["Location", !!form.location],
+    ["Capacity", !!form.capacity],
+    ["Highlights", form.highlights.length > 0],
+    ["Rewards", form.rewards.length > 0],
+    ["Links", form.links.length > 0],
   ];
 
   const required = checks.slice(0, 5);
@@ -615,8 +615,8 @@ function Step5Preview({ form }: { form: EventForm }) {
         <div className="grid grid-cols-3 gap-2">
           {[
             { emoji: "✨", label: "Highlights", count: form.highlights.length },
-            { emoji: "🎁", label: "Rewards",    count: form.rewards.length },
-            { emoji: "🔗", label: "Links",      count: form.links.length },
+            { emoji: "🎁", label: "Rewards", count: form.rewards.length },
+            { emoji: "🔗", label: "Links", count: form.links.length },
           ].map(({ emoji, label, count }) => (
             <div key={label} className={`rounded-xl p-3 text-center border ${count > 0 ? "bg-pink-50 border-pink-100" : "bg-gray-50 border-gray-100"}`}>
               <div className="text-xl mb-1">{emoji}</div>
@@ -653,11 +653,11 @@ function Step5Preview({ form }: { form: EventForm }) {
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export default function CreateEventPage() {
   const router = useRouter();
-  const [step, setStep]         = useState(1);
-  const [form, setForm]         = useState<EventForm>(EMPTY);
-  const [errors, setErrors]     = useState<Partial<Record<keyof EventForm, string>>>({});
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState<EventForm>(EMPTY);
+  const [errors, setErrors] = useState<Partial<Record<keyof EventForm, string>>>({});
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted]   = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   /* ── Generic field setter ── */
   const set = useCallback((k: keyof EventForm, v: string) => {
@@ -667,16 +667,16 @@ export default function CreateEventPage() {
 
   /* ── Array setters ── */
   const setHighlights = (h: EventHighlight[]) => setForm(prev => ({ ...prev, highlights: h }));
-  const setRewards    = (r: EventReward[])    => setForm(prev => ({ ...prev, rewards: r }));
-  const setLinks      = (l: EventLink[])      => setForm(prev => ({ ...prev, links: l }));
+  const setRewards = (r: EventReward[]) => setForm(prev => ({ ...prev, rewards: r }));
+  const setLinks = (l: EventLink[]) => setForm(prev => ({ ...prev, links: l }));
 
   /* ── Per-step validation ── */
   const validate = (s: number): boolean => {
     const e: Partial<Record<keyof EventForm, string>> = {};
     if (s === 1) {
-      if (!form.title.trim())       e.title       = "Title is required";
+      if (!form.title.trim()) e.title = "Title is required";
       if (!form.description.trim()) e.description = "Description is required";
-      if (!form.category)           e.category    = "Please pick a category";
+      if (!form.category) e.category = "Please pick a category";
     }
     if (s === 2) {
       if (!form.date) e.date = "Date is required";
@@ -699,22 +699,22 @@ export default function CreateEventPage() {
       const eventDate = new Date(`${form.date}T${form.time}`);
 
       const payload = {
-        title:       form.title,
+        title: form.title,
         description: form.description,
-        category:    form.category,
-        date:        eventDate.toISOString(),
-        location:    form.location,
-        capacity:    form.capacity ? parseInt(form.capacity) : 0,
-        imageUrl:    form.imageUrl || null,
-        highlights:  form.highlights.filter(h => h.text.trim()),
-        rewards:     form.rewards.filter(r => r.title.trim()),
-        links:       form.links.filter(l => l.url.trim()),
+        category: form.category,
+        date: eventDate.toISOString(),
+        location: form.location,
+        capacity: form.capacity ? parseInt(form.capacity) : 0,
+        imageUrl: form.imageUrl || null,
+        highlights: form.highlights.filter(h => h.text.trim()),
+        rewards: form.rewards.filter(r => r.title.trim()),
+        links: form.links.filter(l => l.url.trim()),
       };
 
       const res = await fetch("/api/events", {
-        method:  "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(payload),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Failed to create event");

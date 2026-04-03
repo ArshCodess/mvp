@@ -1,7 +1,6 @@
-import CardGrid from '@/components/CardGrid'
 import CardWithSearch from '@/components/CardWithSearch'
 import Notifications from '@/components/Notifications'
-import WelcomeBanner from '@/components/welcomebanner'
+import { giveCommand } from '@/lib/ai'
 import { checkUser } from '@/lib/clerk'
 
 function page() {

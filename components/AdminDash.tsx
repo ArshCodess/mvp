@@ -16,6 +16,7 @@ import {
     Loader2,
     Download,
     RefreshCw,
+    SendIcon,
 } from "lucide-react";
 import Link from "next/link";
 import {
@@ -25,8 +26,11 @@ import {
     useDeleteEvent,
     usePrefetchEvents,
     usePrefetchUsers,
+    useCreateEvent,
 } from "@/hooks/useAdminQueries";
 import { useQueryClient } from "@tanstack/react-query";
+import { giveCommand } from "@/lib/ai";
+import { EventsRevalidation } from "@/hooks/revalidations/Events";
 
 export default function AdminDashboard() {
     const [activeTab, setActiveTab] = useState<"overview" | "events" | "users">("overview");
@@ -85,8 +89,8 @@ export default function AdminDashboard() {
                         <button
                             onClick={() => setActiveTab("overview")}
                             className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${activeTab === "overview"
-                                    ? "border-indigo-600 text-indigo-600"
-                                    : "border-transparent text-gray-600 hover:text-gray-900"
+                                ? "border-indigo-600 text-indigo-600"
+                                : "border-transparent text-gray-600 hover:text-gray-900"
                                 }`}
                         >
                             Overview
@@ -95,8 +99,8 @@ export default function AdminDashboard() {
                             onClick={() => setActiveTab("events")}
                             onMouseEnter={() => handleTabHover("events")}
                             className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${activeTab === "events"
-                                    ? "border-indigo-600 text-indigo-600"
-                                    : "border-transparent text-gray-600 hover:text-gray-900"
+                                ? "border-indigo-600 text-indigo-600"
+                                : "border-transparent text-gray-600 hover:text-gray-900"
                                 }`}
                         >
                             Events Management
@@ -105,8 +109,8 @@ export default function AdminDashboard() {
                             onClick={() => setActiveTab("users")}
                             onMouseEnter={() => handleTabHover("users")}
                             className={`px-4 py-3 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap ${activeTab === "users"
-                                    ? "border-indigo-600 text-indigo-600"
-                                    : "border-transparent text-gray-600 hover:text-gray-900"
+                                ? "border-indigo-600 text-indigo-600"
+                                : "border-transparent text-gray-600 hover:text-gray-900"
                                 }`}
                         >
                             Users Management
@@ -301,6 +305,11 @@ function EventsManagementTab() {
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("all");
     const [page, setPage] = useState(1);
+    const [aiMessage, setAiMessage] = useState("");
+    const [showAnnouncementPopup, setShowAnnouncementPopup] = useState(false);
+    const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
+    const [announcementForm, setAnnouncementForm] = useState({ heading: "", description: "" });
+    const [isSubmittingAnnouncement, setIsSubmittingAnnouncement] = useState(false);
 
     const { data, isLoading, error, refetch, isFetching } = useEvents({
         page,
@@ -310,6 +319,7 @@ function EventsManagementTab() {
     });
 
     const deleteEventMutation = useDeleteEvent();
+    const createEventMutation = useCreateEvent();
 
     const handleDelete = async (id: string) => {
         if (confirm("Are you sure you want to delete this event?")) {
@@ -322,8 +332,62 @@ function EventsManagementTab() {
         }
     };
 
+    const handleOpenAnnouncementPopup = (eventId: string) => {
+        setSelectedEventId(eventId);
+        setShowAnnouncementPopup(true);
+        setAnnouncementForm({ heading: "", description: "" });
+    };
+
+    const handleCloseAnnouncementPopup = () => {
+        setShowAnnouncementPopup(false);
+        setSelectedEventId(null);
+        setAnnouncementForm({ heading: "", description: "" });
+    };
+
+    const handleSubmitAnnouncement = async () => {
+        if (!announcementForm.heading.trim() || !announcementForm.description.trim()) {
+            alert("Please fill in both heading and description");
+            return;
+        }
+
+        setIsSubmittingAnnouncement(true);
+        try {
+            const response = await fetch("/api/announcements", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    eventId: selectedEventId,
+                    heading: announcementForm.heading.trim(),
+                    description: announcementForm.description.trim(),
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to create announcement");
+            }
+
+            alert("Announcement created successfully!");
+            handleCloseAnnouncementPopup();
+            refetch();
+        } catch (error) {
+            alert(error instanceof Error ? error.message : "Failed to create announcement");
+        } finally {
+            setIsSubmittingAnnouncement(false);
+        }
+    };
+    const handleAiSubmit = async () => {
+        const res = await giveCommand("Create an event for a music concert on 25th December at 7 PM in Central Park with a capacity of 500 people. The event will feature live performances by popular bands and artists. The description of the event is 'Join us for an unforgettable night of music and entertainment at Central Park! Enjoy live performances by top bands and artists, delicious food, and a vibrant atmosphere. Don't miss out on this incredible music concert!' The image URL for the event is 'https://example.com/concert.jpg'. The highlights of the event include live performances, food stalls, and a vibrant atmosphere. The rewards for attending the event include exclusive merchandise and discounts on future events. For more information, visit our website at https://example.com/concert or contact us at https://example.com/contact")
+        await createEventMutation.mutateAsync(res)
+        // refetch()
+        
+
+    }
+
     return (
         <div className="space-y-6">
+
             {/* Refetching indicator */}
             {isFetching && (
                 <div className="fixed top-20 right-4 z-50 bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
@@ -338,12 +402,28 @@ function EventsManagementTab() {
                     <h2 className="text-2xl font-bold text-gray-900">Events Management</h2>
                     <p className="text-sm text-gray-600 mt-1">Create and manage campus events</p>
                 </div>
-                <Link href="/events/create">
-                    <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
-                        <Plus className="w-4 h-4" />
-                        Create Event
+                <div className="flex items-center gap-4">
+                    <Link href="/events/create">
+                        <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all">
+                            <Plus className="w-4 h-4" />
+                            Create Event
+                        </button>
+                    </Link>
+                    <button
+                        onClick={handleAiSubmit}
+                        disabled={createEventMutation.isPending}
+                        className={`w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50`}
+                    >
+                        {createEventMutation.isPending ? (
+                            <>
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Creating...
+                            </>
+                        ) : (
+                            "Create Event using EventlyAi"
+                        )}
                     </button>
-                </Link>
+                </div>
             </div>
 
             {/* Filters */}
@@ -399,7 +479,7 @@ function EventsManagementTab() {
                 ) : (
                     <>
                         <div className="overflow-x-auto">
-                            <table className="w-full">
+                            <table className="w-full ">
                                 <thead className="bg-gray-50 border-b border-gray-200">
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
@@ -419,7 +499,7 @@ function EventsManagementTab() {
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-200">
+                                <tbody className="divide-y divide-gray-200 ">
                                     {data?.events.map((event) => (
                                         <tr key={event.id} className="hover:bg-gray-50 transition-colors">
                                             <td className="px-6 py-4">
@@ -459,6 +539,12 @@ function EventsManagementTab() {
                                                             <Eye className="w-4 h-4 text-gray-600" />
                                                         </button>
                                                     </Link>
+                                                    <button
+                                                        onClick={() => handleOpenAnnouncementPopup(event.id)}
+                                                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                                                    >
+                                                        <SendIcon className="w-4 h-4 text-green-600" />
+                                                    </button>
                                                     <Link href={`/events/${event.id}/update`}>
                                                         <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                                                             <Edit className="w-4 h-4 text-indigo-600" />
@@ -510,6 +596,82 @@ function EventsManagementTab() {
                     </>
                 )}
             </div>
+
+            {/* Announcements Popup Modal */}
+            {showAnnouncementPopup && (
+                <div className="fixed inset-0 bg-pink-100 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900">Create Announcement</h2>
+                            <button
+                                onClick={handleCloseAnnouncementPopup}
+                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                            >
+                                <span className="text-2xl">×</span>
+                            </button>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Heading
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter announcement heading"
+                                    value={announcementForm.heading}
+                                    onChange={(e) =>
+                                        setAnnouncementForm({ ...announcementForm, heading: e.target.value })
+                                    }
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Description
+                                </label>
+                                <textarea
+                                    placeholder="Enter announcement description"
+                                    value={announcementForm.description}
+                                    onChange={(e) =>
+                                        setAnnouncementForm({ ...announcementForm, description: e.target.value })
+                                    }
+                                    rows={4}
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                                />
+                            </div>
+
+                            <div className="flex gap-3 pt-4">
+                                <button
+                                    onClick={handleCloseAnnouncementPopup}
+                                    disabled={isSubmittingAnnouncement}
+                                    className="flex-1 px-4 py-2 border border-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleSubmitAnnouncement}
+                                    disabled={isSubmittingAnnouncement}
+                                    className="flex-1 px-4 py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                >
+                                    {isSubmittingAnnouncement ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <SendIcon className="w-4 h-4" />
+                                            Send
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -596,8 +758,8 @@ function UsersManagementTab() {
                                     )}
                                     <span
                                         className={`px-2 py-1 text-xs font-semibold rounded-full ${user.role === "ADMIN"
-                                                ? "bg-purple-100 text-purple-700"
-                                                : "bg-gray-100 text-gray-700"
+                                            ? "bg-purple-100 text-purple-700"
+                                            : "bg-gray-100 text-gray-700"
                                             }`}
                                     >
                                         {user.role}

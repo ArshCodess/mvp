@@ -5,30 +5,26 @@ import { auth } from '@clerk/nextjs/server'
 
 const announcementSchema = z.object({
   eventId: z.string().min(1, 'Event ID is required'),
-  message: z.string().min(1, 'Message is required'),
+  heading: z.string().min(1, 'Heading is required'),
+  description: z.string().min(1, 'Description is required'),
 })
 
 // GET /api/announcements - Get announcements (optionally filtered by event)
 export async function GET(request: NextRequest) {
   try {
     const { userId } =await auth()
-    const { searchParams } = new URL(request.url)
-    const eventId = searchParams.get('eventId')
 
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const where = eventId ? { eventId } : {}
 
     const announcements = await prisma.announcement.findMany({
-      where,
-      include: {
+      include:{
         event: true,
         createdBy: true,
-      },
-      orderBy: { createdAt: 'desc' },
-    })
+      }
+    });
 
     return NextResponse.json(announcements)
   } catch (error) {
@@ -50,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     const user = await prisma.user.findUnique({
-      where: { email: userId },
+      where: { clerkId: userId },
     })
 
     if (!user || user.role !== 'ADMIN') {
@@ -81,7 +77,8 @@ export async function POST(request: NextRequest) {
 
     const announcement = await prisma.announcement.create({
       data: {
-        message: validatedData.message,
+        heading: validatedData.heading,
+        description: validatedData.description,
         eventId: validatedData.eventId,
         createdById: user.id,
       },

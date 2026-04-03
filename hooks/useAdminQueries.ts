@@ -71,10 +71,8 @@ type CreateEventData = {
 // Query Keys
 export const queryKeys = {
   dashboard: ["admin", "dashboard"] as const,
-  events: (params?: Record<string, string>) =>
-    ["admin", "events", params] as const,
-  users: (params?: Record<string, string>) =>
-    ["admin", "users", params] as const,
+  events: (params?: Record<string, string>) =>["admin", "events", params] as const,
+  users: (params?: Record<string, string>) =>["admin", "users", params] as const,
   eventDetail: (id: string) => ["admin", "event", id] as const,
   userDetail: (id: string) => ["admin", "user", id] as const,
 };
